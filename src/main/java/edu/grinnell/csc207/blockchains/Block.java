@@ -2,6 +2,7 @@ package edu.grinnell.csc207.blockchains;
 
 import java.io.ByteArrayOutputStream;
 import java.security.MessageDigest;
+import java.util.*;
 
 /**
  * Blocks to be stored in blockchains.
@@ -81,37 +82,40 @@ public class Block {
 
   /**
    * Helping method calculating the hash of the giving block.
+   *
    * @return a Hash
    */
   public Hash calculateHash() {
     ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
     byteStream.writeBytes(this.getBytes());
-    if(this.prevBlock != null){
+    if (this.prevBlock != null) {
       byteStream.writeBytes(this.prevBlock.getBytes());
-    } //if previous block is not null
+    } // if previous block is not null
     try {
       MessageDigest md = MessageDigest.getInstance("sha-256");
       md.update(byteStream.toByteArray());
       byte[] hash = md.digest();
       return new Hash(hash);
     } catch (Exception e) {
-      //do nothing
+      // do nothing
     } // try/catch
     return null;
-  } //calculatehash()
+  } // calculatehash()
 
   /**
    * geting an array of bytes of the giving block.
+   *
    * @return an array of bytes
    */
-  public byte[] getBytes(){
+  public byte[] getBytes() {
     ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
     byteStream.write((byte) this.number);
     byteStream.writeBytes(this.transactionF.getBytes());
     byteStream.writeBytes(this.previousHash.getBytes());
     byteStream.write((byte) this.nonceF);
     return byteStream.toByteArray();
-  } //getBytes
+  } // getBytes
+
   // +---------+-----------------------------------------------------
   // | Methods |
   // +---------+
@@ -167,6 +171,25 @@ public class Block {
    * @return a string representation of the block.
    */
   public String toString() {
-    return ""; // STUB
+    StringBuffer output = new StringBuffer();
+    output.append("Block " + this.number + " (Transaction: [");
+    if (prevBlock.transactionF.getSource().equals("")) {
+      output.append("Deposit,");
+    } else {
+      output.append("Source: " + this.transactionF.getSource());
+    }
+    output.append(
+        ", Target: "
+            + this.transactionF.getTarget()
+            + ", Amount: "
+            + this.transactionF.getAmount()
+            + "], Nonce: "
+            + this.nonceF
+            + ", prevHash: "
+            + this.previousHash
+            + ", hash: "
+            + this.curHash
+            + ")");
+    return output.toString();
   } // toString()
 } // class Block
