@@ -3,6 +3,7 @@ package edu.grinnell.csc207.blockchains;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+
 /**
  * A full blockchain.
  *
@@ -12,7 +13,9 @@ public class BlockChain implements Iterable<Transaction> {
   // +--------+------------------------------------------------------
   // | Fields |
   // +--------+
-
+  Block front;
+  
+  int size;
   // +--------------+------------------------------------------------
   // | Constructors |
   // +--------------+
@@ -24,7 +27,7 @@ public class BlockChain implements Iterable<Transaction> {
    *   The validator used to check elements.
    */
   public BlockChain(HashValidator check) {
-    // STUB
+    this.front.transactionF = new Transaction("", "", 0);
   } // BlockChain(HashValidator)
 
   // +---------+-----------------------------------------------------
