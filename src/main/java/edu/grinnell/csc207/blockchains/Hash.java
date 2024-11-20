@@ -1,5 +1,7 @@
 package edu.grinnell.csc207.blockchains;
 
+import java.util.Arrays;
+
 /**
  * Encapsulated hashes.
  *
@@ -10,6 +12,8 @@ public class Hash {
   // +--------+------------------------------------------------------
   // | Fields |
   // +--------+
+
+  byte[] hashData;
 
   // +--------------+------------------------------------------------
   // | Constructors |
@@ -22,7 +26,7 @@ public class Hash {
    *   The data to copy into the hash.
    */
   public Hash(byte[] data) {
-    // STUB
+    this.hashData = Arrays.copyOf(data, data.length);
   } // Hash(byte[])
 
   // +---------+-----------------------------------------------------
@@ -35,7 +39,7 @@ public class Hash {
    * @return the number of bytes in the hash.
    */
   public int length() {
-    return 0;   // STUB
+    return hashData.length;
   } // length()
 
   /**
@@ -48,7 +52,7 @@ public class Hash {
    * @return the ith byte
    */
   public byte get(int i) {
-    return 0;   // STUB
+    return hashData[i];
   } // get()
 
   /**
@@ -58,7 +62,7 @@ public class Hash {
    * @return a copy of the bytes in the hash.
    */
   public byte[] getBytes() {
-    return new byte[] {1, 2, 3, 4, 5};      // STUB
+    return Arrays.copyOf(hashData, this.length()); 
   } // getBytes()
 
   /**
@@ -67,7 +71,7 @@ public class Hash {
    * @return the hash as a hex string.
    */
   public String toString() {
-    return "";          // STUB
+    return "";        
   } // toString()
 
   /**
@@ -80,7 +84,7 @@ public class Hash {
    *   otherwise.
    */
   public boolean equals(Object other) {
-    return false;       // STUB
+    return false;  
   } // equals(Object)
 
   /**
