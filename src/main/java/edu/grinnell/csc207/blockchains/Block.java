@@ -79,12 +79,16 @@ public class Block {
     this.curHash = calculateHash();
   } // computeHash()
 
+  /**
+   * Helping method calculating the hash of the giving block.
+   * @return a Hash
+   */
   public Hash calculateHash() {
     ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
     byteStream.writeBytes(this.getBytes());
     if(this.prevBlock != null){
       byteStream.writeBytes(this.prevBlock.getBytes());
-    }
+    } //if previous block is not null
     try {
       MessageDigest md = MessageDigest.getInstance("sha-256");
       md.update(byteStream.toByteArray());
@@ -94,8 +98,12 @@ public class Block {
       //do nothing
     } // try/catch
     return null;
-  }
+  } //calculatehash()
 
+  /**
+   * geting an array of bytes of the giving block.
+   * @return an array of bytes
+   */
   public byte[] getBytes(){
     ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
     byteStream.write((byte) this.number);
@@ -103,7 +111,7 @@ public class Block {
     byteStream.writeBytes(this.previousHash.getBytes());
     byteStream.write((byte) this.nonceF);
     return byteStream.toByteArray();
-  } 
+  } //getBytes
   // +---------+-----------------------------------------------------
   // | Methods |
   // +---------+

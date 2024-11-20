@@ -1,5 +1,7 @@
 package edu.grinnell.csc207.blockchains;
 
+import java.io.ByteArrayOutputStream;
+
 /**
  * A simple transaction.
  *
@@ -51,12 +53,16 @@ public class Transaction {
   // | Methods |
   // +---------+
   /**
-   * 
-   * @return
+   * Get a copy of the bytes in the transaction.
+   * @return array of bytes
    */
   public byte[] getBytes(){
-    return new byte[] {};
-  }
+    ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+    byteStream.write((byte) this.amount);
+    byteStream.writeBytes(this.source.getBytes());
+    byteStream.writeBytes(this.target.getBytes());
+    return byteStream.toByteArray();
+  } //getBytes()
   /**
    * Get the source of the transaction.
    *
