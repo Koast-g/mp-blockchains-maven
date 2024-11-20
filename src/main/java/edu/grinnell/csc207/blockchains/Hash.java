@@ -71,8 +71,14 @@ public class Hash {
    * @return the hash as a hex string.
    */
   public String toString() {
-    return "";        
-  } // toString()
+    byte[] bytes = Arrays.copyOf(hashData, length());
+    StringBuilder sb = new StringBuilder();
+      for (byte b : bytes) {
+        sb.append(String.format("%02X ", b));
+      }
+
+    return sb.toString();
+} 
 
   /**
    * Determine if this is equal to another object.
@@ -84,7 +90,8 @@ public class Hash {
    *   otherwise.
    */
   public boolean equals(Object other) {
-    return false;  
+    return (other instanceof Hash)
+    && this.equals((Hash) other);
   } // equals(Object)
 
   /**
