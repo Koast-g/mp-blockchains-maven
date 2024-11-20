@@ -13,13 +13,11 @@ public class BlockChain implements Iterable<Transaction> {
   // +--------+------------------------------------------------------
   // | Fields |
   // +--------+
-<<<<<<< HEAD
+
   Block front;
   
   int size;
-=======
-  HashValidator checking;
->>>>>>> 9d4ff58 (too String method in Blocks)
+
   // +--------------+------------------------------------------------
   // | Constructors |
   // +--------------+
