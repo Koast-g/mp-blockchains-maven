@@ -74,7 +74,7 @@ public class Hash {
     byte[] bytes = Arrays.copyOf(hashData, length());
     StringBuilder sb = new StringBuilder();
       for (byte b : bytes) {
-        sb.append(String.format("%02X ", b));
+        sb.append(String.format("%02X", b));
       }
 
     return sb.toString();
@@ -89,10 +89,16 @@ public class Hash {
    * @return true if the two objects are conceptually equal and false
    *   otherwise.
    */
+  
   public boolean equals(Object other) {
     return (other instanceof Hash)
     && this.equals((Hash) other);
   } // equals(Object)
+
+  public boolean equals(Hash other) {
+    boolean temp = Arrays.equals(other.hashData, this.hashData);
+    return temp;
+  } // equals(Transaction)
 
   /**
    * Get the hash code of this object.
