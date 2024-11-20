@@ -50,7 +50,13 @@ public class Transaction {
   // +---------+-----------------------------------------------------
   // | Methods |
   // +---------+
-
+  /**
+   * 
+   * @return
+   */
+  public byte[] getBytes(){
+    return new byte[] {};
+  }
   /**
    * Get the source of the transaction.
    *
