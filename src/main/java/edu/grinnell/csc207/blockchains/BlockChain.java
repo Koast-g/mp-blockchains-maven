@@ -9,7 +9,7 @@ import java.util.*;
 /**
  * A full blockchain.
  *
- * @author Your
+ * @author Sal & Koast
  */
 public class BlockChain implements Iterable<Transaction> {
   // +--------+------------------------------------------------------

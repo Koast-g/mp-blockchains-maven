@@ -1,6 +1,5 @@
 package edu.grinnell.csc207.blockchains;
 
-import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;
 import java.security.MessageDigest;
 import java.util.*;
@@ -8,33 +7,36 @@ import java.util.*;
 /**
  * Blocks to be stored in blockchains.
  *
- * @author Your Name Here
+ * @author Sal & Koast
  * @author Samuel A. Rebelsky
  */
 public class Block {
   // +--------+------------------------------------------------------
   // | Fields |
   // +--------+
-  /** number of the blocks */
+  /** number of the blocks. */
   int number;
 
-  /** Transaction */
+  /** Transaction. */
   Transaction transactionF;
 
-  /** current hash */
+  /** current hash. */
   Hash curHash;
 
-  /** Previous hash */
+  /** Previous hash. */
   Hash previousHash;
 
-  /** Validation of the block */
+  /** Validation of the block. */
   HashValidator checking;
 
   /** nonce of the block */
   long nonceF;
 
-  /** previous block */
+  /** previous block. */
   Block prevBlock;
+
+  /** next blokc. */
+  Block nextBlock;
 
   // +--------------+------------------------------------------------
   // | Constructors |
@@ -53,6 +55,7 @@ public class Block {
     this.number = num;
     this.transactionF = transaction;
     this.previousHash = prevHash;
+    this.nonceF = mine(check);
     computeHash();
   } // Block(int, Transaction, Hash, HashValidator)
 
@@ -75,69 +78,97 @@ public class Block {
   // +---------+-----------------------------------------------------
   // | Helpers |
   // +---------+
+  /**
+   * Mines the nonce
+   *
+   * @param check HashValidator
+   * @return long
+   */
+  private long mine(HashValidator check) {
+    long nonce = 0;
+    while (true) {
+      if (check.isValid(calculateHash(this))) {
+        return nonce;
+      } // if
+      nonce++;
+    } // while
+  } // mine(HashValidator)
 
   /** Compute the hash of the block given all the other info already stored in the block. */
   public void computeHash() {
     this.curHash = calculateHash(this);
   } // computeHash()
 
-  // /**
-  //  * Helping method calculating the hash of the giving block.
-  //  *
-  //  * @return a Hash
-  //  */
-  // public Hash calculateHash() {
-  //   ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
-  //   byteStream.writeBytes(this.getBytes());
-  //   if (this.prevBlock != null) {
-  //     byteStream.writeBytes(this.prevBlock.getBytes());
-  //   } // if previous block is not null
-  //   try {
-  //     MessageDigest md = MessageDigest.getInstance("sha-256");
-  //     md.update(byteStream.toByteArray());
-  //     byte[] hash = md.digest();
-  //     return new Hash(hash);
-  //   } catch (Exception e) {
-  //     // do nothing
-  //   } // try/catch
-  //   return null;
-  // } // calculatehash()
-
-  // /**
-  //  * geting an array of bytes of the giving block.
-  //  *
-  //  * @return an array of bytes
-  //  */
-  // public byte[] getBytes() {
-  //   ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
-  //   byteStream.writeBytes(ByteBuffer.allocate(4).putInt(this.number).array());
-  //   byteStream.writeBytes(this.transactionF.getBytes());
-  //   byteStream.writeBytes(this.previousHash.getBytes());
-  //   byteStream.writeBytes(ByteBuffer.allocate(Long.BYTES).putLong(this.nonceF).array());
-  //   return byteStream.toByteArray();
-  // } // getBytes
-
-   /**
+  /**
    * Helping method calculating the hash of the giving block.
    *
    * @return a Hash
    */
   public Hash calculateHash(Block block) {
     try {
-          MessageDigest md = MessageDigest.getInstance("sha-256");
-          md.update(ByteBuffer.allocate(4).putInt(block.getNum()).array());
-          md.update(block.getTransaction().getSource().getBytes());
-          md.update(block.getTransaction().getTarget().getBytes());
-          md.update(ByteBuffer.allocate(4).putInt(block.getTransaction().getAmount()).array());
-          md.update(block.getPrevHash().getBytes());
-          md.update(ByteBuffer.allocate(Long.BYTES).putLong(block.getNonce()).array());
-          byte[] hash = md.digest();
-          return new Hash(hash);
-        } catch (Exception e) {
-          // do nothing
-        } // try/catch
-        return null;
+      MessageDigest md = MessageDigest.getInstance("sha-256");
+      md.update(ByteBuffer.allocate(4).putInt(block.getNum()).array());
+      md.update(block.getTransaction().getSource().getBytes());
+      md.update(block.getTransaction().getTarget().getBytes());
+      md.update(ByteBuffer.allocate(4).putInt(block.getTransaction().getAmount()).array());
+      md.update(block.getPrevHash().getBytes());
+      md.update(ByteBuffer.allocate(Long.BYTES).putLong(block.getNonce()).array());
+      byte[] hash = md.digest();
+      return new Hash(hash);
+    } catch (Exception e) {
+      // do nothing
+    } // try/catch
+    return null;
   } // calculatehash()
+
+  /**
+   * Gets the next blookc in the chain.
+   *
+   * @return next Block
+   */
+  public Block getNextBlock() {
+    return this.nextBlock;
+  } // getNextBlock()
+
+  /**
+   * Gets the previous block in the chain.
+   *
+   * @return previous Block
+   */
+  public Block getPrevBlock() {
+    return this.prevBlock;
+  } // getPrevBlock()
+
+  /**
+   * Setting Previous block.
+   *
+   * @param prevBlk previous Block
+   */
+  public void setPrevBlock(Block prevBlk) {
+    if (this.prevBlock != null) {
+      prevBlk.nextBlock = null;
+    } // if
+    this.prevBlock = prevBlk;
+    if (this.prevBlock != null) {
+      prevBlk.nextBlock = this;
+    } // if
+  } // setPreviousBlock(Block)
+
+  /**
+   * Setting Next block.
+   *
+   * @param nextBlock next Block
+   */
+  public void setNextBlock(Block nextBlk) {
+    if (this.nextBlock != null) {
+      nextBlk.prevBlock = null;
+    } // if
+    this.nextBlock = nextBlk;
+    if (this.nextBlock != null) {
+      nextBlk.prevBlock = this;
+    } // if
+  } // setNextBlock(Block)
+
   // +---------+-----------------------------------------------------
   // | Methods |
   // +---------+
