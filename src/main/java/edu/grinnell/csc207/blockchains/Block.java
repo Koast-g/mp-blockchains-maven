@@ -1,6 +1,7 @@
 package edu.grinnell.csc207.blockchains;
 
 import java.io.ByteArrayOutputStream;
+import java.nio.ByteBuffer;
 import java.security.MessageDigest;
 import java.util.*;
 
@@ -77,45 +78,66 @@ public class Block {
 
   /** Compute the hash of the block given all the other info already stored in the block. */
   public void computeHash() {
-    this.curHash = calculateHash();
+    this.curHash = calculateHash(this);
   } // computeHash()
 
-  /**
+  // /**
+  //  * Helping method calculating the hash of the giving block.
+  //  *
+  //  * @return a Hash
+  //  */
+  // public Hash calculateHash() {
+  //   ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+  //   byteStream.writeBytes(this.getBytes());
+  //   if (this.prevBlock != null) {
+  //     byteStream.writeBytes(this.prevBlock.getBytes());
+  //   } // if previous block is not null
+  //   try {
+  //     MessageDigest md = MessageDigest.getInstance("sha-256");
+  //     md.update(byteStream.toByteArray());
+  //     byte[] hash = md.digest();
+  //     return new Hash(hash);
+  //   } catch (Exception e) {
+  //     // do nothing
+  //   } // try/catch
+  //   return null;
+  // } // calculatehash()
+
+  // /**
+  //  * geting an array of bytes of the giving block.
+  //  *
+  //  * @return an array of bytes
+  //  */
+  // public byte[] getBytes() {
+  //   ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+  //   byteStream.writeBytes(ByteBuffer.allocate(4).putInt(this.number).array());
+  //   byteStream.writeBytes(this.transactionF.getBytes());
+  //   byteStream.writeBytes(this.previousHash.getBytes());
+  //   byteStream.writeBytes(ByteBuffer.allocate(Long.BYTES).putLong(this.nonceF).array());
+  //   return byteStream.toByteArray();
+  // } // getBytes
+
+   /**
    * Helping method calculating the hash of the giving block.
    *
    * @return a Hash
    */
-  public Hash calculateHash() {
-    ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
-    byteStream.writeBytes(this.getBytes());
-    if (this.prevBlock != null) {
-      byteStream.writeBytes(this.prevBlock.getBytes());
-    } // if previous block is not null
+  public Hash calculateHash(Block block) {
     try {
-      MessageDigest md = MessageDigest.getInstance("sha-256");
-      md.update(byteStream.toByteArray());
-      byte[] hash = md.digest();
-      return new Hash(hash);
-    } catch (Exception e) {
-      // do nothing
-    } // try/catch
-    return null;
+          MessageDigest md = MessageDigest.getInstance("sha-256");
+          md.update(ByteBuffer.allocate(4).putInt(block.getNum()).array());
+          md.update(block.getTransaction().getSource().getBytes());
+          md.update(block.getTransaction().getTarget().getBytes());
+          md.update(ByteBuffer.allocate(4).putInt(block.getTransaction().getAmount()).array());
+          md.update(block.getPrevHash().getBytes());
+          md.update(ByteBuffer.allocate(Long.BYTES).putLong(block.getNonce()).array());
+          byte[] hash = md.digest();
+          return new Hash(hash);
+        } catch (Exception e) {
+          // do nothing
+        } // try/catch
+        return null;
   } // calculatehash()
-
-  /**
-   * geting an array of bytes of the giving block.
-   *
-   * @return an array of bytes
-   */
-  public byte[] getBytes() {
-    ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
-    byteStream.write((byte) this.number);
-    byteStream.writeBytes(this.transactionF.getBytes());
-    byteStream.writeBytes(this.previousHash.getBytes());
-    byteStream.write((byte) this.nonceF);
-    return byteStream.toByteArray();
-  } // getBytes
-
   // +---------+-----------------------------------------------------
   // | Methods |
   // +---------+
