@@ -55,7 +55,8 @@ public class Block {
     this.number = num;
     this.transactionF = transaction;
     this.previousHash = prevHash;
-    this.nonceF = mine(check);
+    this.nonceF = 0;
+    mine(check);
     computeHash();
   } // Block(int, Transaction, Hash, HashValidator)
 
@@ -84,13 +85,9 @@ public class Block {
    * @param check HashValidator
    * @return long
    */
-  private long mine(HashValidator check) {
-    long nonce = 0;
-    while (true) {
-      if (check.isValid(calculateHash(this))) {
-        return nonce;
-      } // if
-      nonce++;
+  private void mine(HashValidator check) {
+    while (!check.isValid(calculateHash(this))) {
+      this.nonceF++;
     } // while
   } // mine(HashValidator)
 
