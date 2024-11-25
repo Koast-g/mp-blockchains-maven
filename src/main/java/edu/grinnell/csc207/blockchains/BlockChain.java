@@ -1,9 +1,5 @@
 package edu.grinnell.csc207.blockchains;
 
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-
-
 import java.util.*;
 
 /**
@@ -75,10 +71,12 @@ public class BlockChain implements Iterable<Transaction> {
     long nonce = 0;
     Block newBlock;
     do {
-      newBlock = new Block(size, t, rear.getHash(), nonce++);
+        newBlock = new Block(size, t, rear.getHash(), nonce++);
     } while (!validator.isValid(newBlock.getHash()));
+    
     return newBlock;
-  } // mine(Transaction)
+}
+
 
   /**
    * Get the number of blocks currently in the chain.
@@ -97,15 +95,17 @@ public class BlockChain implements Iterable<Transaction> {
    */
   public void append(Block blk) {
     validateBlock(blk);
-    rear = blk;
+    rear.nextBlock = blk;  // Link the current last block to the new block
+    blk.prevBlock = rear;  // Link the new block back to the current last block
+    rear = blk;            // Update the rear to the new block
     size++;
-  } // append(Block)
+}
 
   /**
    * Attempt to remove the last block from the chain.
    *
    * @return false if the chain has only one block (in which case it's not removed) or true
-   * otherwise (in which case the last block is removed).
+   *         otherwise (in which case the last block is removed).
    */
   public boolean removeLast() {
     if (size == 1) {
@@ -202,6 +202,14 @@ public class BlockChain implements Iterable<Transaction> {
     return balance;
   } // balance()
 
+  public void printTransactions() {
+    Block current = front;
+    while (current != null) {
+        System.out.println(current.transactionF);  // Assuming transactionF is the field holding the transaction data
+        current = current.nextBlock;  // Move to the next block
+    }
+}
+
   /**
    * Get an iterator for all the blocks in the chain.
    *
@@ -209,22 +217,22 @@ public class BlockChain implements Iterable<Transaction> {
    */
   public Iterator<Block> blocks() {
     return new Iterator<Block>() {
-      private Block current = front;
+        private Block current = front;
 
-      public boolean hasNext() {
-        return current != null;
-      }
-
-      public Block next() {
-        if (!hasNext()) {
-          throw new NoSuchElementException();
+        public boolean hasNext() {
+            return current != null;
         }
-        Block temp = current;
-        current = current.prevBlock;
-        return temp;
-      }
+
+        public Block next() {
+            if (!hasNext()) {
+                throw new NoSuchElementException();
+            }
+            Block temp = current;
+            current = current.nextBlock; // Move to the next block
+            return temp;
+        }
     };
-  } // blocks()
+}
 
   /**
    * Get an iterator for all the transactions in the chain.
@@ -244,7 +252,7 @@ public class BlockChain implements Iterable<Transaction> {
           throw new NoSuchElementException();
         }
         Transaction temp = current.transactionF;
-        current = current.prevBlock;
+        current = current.nextBlock;
         return temp;
       }
     };

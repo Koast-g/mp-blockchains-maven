@@ -86,24 +86,29 @@ public class BlockChainUI {
       try {
         switch (command.toLowerCase()) {
           case "mine" -> {
+            // Prompt the user for transaction details
             String source = IOUtils.readLine(pen, eyes, "Source (return for deposit): ");
             String target = IOUtils.readLine(pen, eyes, "Target: ");
             int amount = IOUtils.readInt(pen, eyes, "Amount: ");
+            // Mine a new block with the given transaction
             Block minedBlock = chain.mine(new Transaction(source, target, amount));
-            pen.println("Use nonce: " + minedBlock.getNonce());
+            pen.println("Block mined! Use nonce: " + minedBlock.getNonce());
           }
 
           case "append" -> {
+            // Prompt the user for transaction details and nonce
             String source = IOUtils.readLine(pen, eyes, "Source (return for deposit): ");
             String target = IOUtils.readLine(pen, eyes, "Target: ");
             int amount = IOUtils.readInt(pen, eyes, "Amount: ");
             long nonce = IOUtils.readLong(pen, eyes, "Nonce: ");
+            // Create and append a new block to the chain
             Block newBlock = new Block(chain.getSize(), new Transaction(source, target, amount), chain.getHash(), nonce);
-            chain.append(newBlock);
+            chain.append(newBlock); // This will append the block to the chain
             pen.printf("Appended: %s\n", newBlock);
-          }
+        }
 
           case "remove" -> {
+            // Attempt to remove the last block, except the genesis block
             if (chain.removeLast()) {
               pen.println("Removed last element");
             } else {
@@ -112,12 +117,16 @@ public class BlockChainUI {
           }
 
           case "check" -> {
+            // Check the validity of the blockchain
             if (chain.isCorrect()) {
               pen.println("The blockchain checks out.");
+            } else {
+              pen.println("The blockchain is invalid.");
             }
           }
 
           case "users" -> {
+            // Print out the list of users in the blockchain
             Iterator<String> users = chain.users();
             while (users.hasNext()) {
               pen.println(users.next());
@@ -125,12 +134,14 @@ public class BlockChainUI {
           }
 
           case "balance" -> {
+            // Query the balance for a user
             String user = IOUtils.readLine(pen, eyes, "User: ");
             int balance = chain.balance(user);
             pen.printf("%s's balance is %d\n", user, balance);
           }
 
           case "transactions" -> {
+            // Print out the chain of transactions
             Iterator<Transaction> transactions = chain.iterator();
             while (transactions.hasNext()) {
               pen.println(transactions.next());
@@ -138,6 +149,7 @@ public class BlockChainUI {
           }
 
           case "blocks" -> {
+            // Print out the chain of blocks
             Iterator<Block> blocks = chain.blocks();
             while (blocks.hasNext()) {
               pen.println(blocks.next());
