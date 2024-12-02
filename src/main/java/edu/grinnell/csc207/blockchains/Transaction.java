@@ -1,58 +1,110 @@
 package edu.grinnell.csc207.blockchains;
 
-/**
- * A simple transaction.
- */
+/** A simple transaction. */
 public class Transaction {
-  private String source;  // Source of the transfer
-  private String target;  // Target of the transfer
-  private int amount;     // Amount transferred
+  // +--------+------------------------------------------------------
+  // | Fields |
+  // +--------+
 
-  // Constructor for creating a new transaction (deposit or transfer)
+  /** Source of the transfer. */
+  private String source;
+
+  /** Target of the transfer. */
+  private String target;
+
+  /** Amount transferred. */
+  private int amount;
+
+  // +--------------+------------------------------------------------
+  // | Constructors |
+  // +--------------+
+
+  /**
+   * Create a new Transaction. For a deposit, rather than a transfer, use the empty string for the
+   * source.
+   *
+   * @param src The source of the transaction (or empty for a deposit).
+   * @param tgt The person receiving the transaction.
+   * @param amt The funds transfered.
+   */
   public Transaction(String src, String tgt, int amt) {
     this.source = src;
     this.target = tgt;
     this.amount = amt;
-  }
+  } // Transaction(src, tgt, amt)
 
-  // Get the source of the transaction
+  // +---------+-----------------------------------------------------
+  // | Methods |
+  // +---------+
+
+  /**
+   * Get the source of the transaction.
+   *
+   * @return The source (or the empty string, if it'sa deposit).
+   */
   public String getSource() {
     return this.source;
-  }
+  } // getSource
 
-  // Get the target of the transaction
+  /**
+   * Get the target of the transaction.
+   *
+   * @return The target.
+   */
   public String getTarget() {
     return this.target;
-  }
+  } // getTarget
 
-  // Get the amount of the transaction
+  /**
+   * Get the amount of the transaction.
+   *
+   * @return the amount.
+   */
   public int getAmount() {
     return this.amount;
-  }
+  } // getAmount
 
-  // Convert to string form
+  /**
+   * Convert to string form.
+   *
+   * @return a string of the form [Source: source, Target: target, Amount: amounts] if the source is
+   *     nonempty. Otherwise, returns a string in the form [Deposit, Target: target, Amount:
+   *     amount].
+   */
   public String toString() {
-    return String.format("[%s, Target: %s, Amount: %s]",
-        ("".equals(this.source)) ? "Deposit" : "Source: " + this.source,
-        this.target,
-        this.amount);
-  }
+    return String.format(
+        "[%s, Target: %s, Amount: %s]",
+        ("".equals(this.source)) ? "Deposit" : "Source: " + this.source, this.target, this.amount);
+  } // toString()
 
-  // Get a hash code
+  /**
+   * Get a hash code.
+   *
+   * @return the hash code.
+   */
   public int hashCode() {
     return this.toString().hashCode();
-  }
+  } // hashCode()
 
-  // Check if this transaction is equal to another transaction
+  /**
+   * Determine if this Transaction equals another object.
+   *
+   * @param other The object to compare to.
+   * @return true if the other object is a Transaction with the same fields.
+   */
   public boolean equals(Object other) {
-    return (other instanceof Transaction)
-        && this.equals((Transaction) other);
-  }
+    return (other instanceof Transaction) && this.equals((Transaction) other);
+  } // equals(Other)
 
-  // Check if this transaction is equal to another Transaction
+  /**
+   * Determine if this Transaction equals another Transaction.
+   *
+   * @param other The transaction to compare to.
+   * @return true if the other object has the same source, target, and value.
+   */
   public boolean equals(Transaction other) {
     return other.source.equals(this.source)
         && other.target.equals(this.target)
         && other.amount == this.amount;
-  }
-}
+  } // equals(Transaction)
+} // Transaction
